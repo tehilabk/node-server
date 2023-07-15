@@ -8,7 +8,7 @@ const router = Express.Router();
 router.use(Middleware.errorMiddleware);
 
 // GET operation - retrieve a specific product by ID
-router.get('/products/:id', async (req, res, next) => {
+router.get('/product/:id', async (req, res, next) => {
   try {
     const productId = req.params.id;
     const product = await Product.findById(productId);
@@ -24,19 +24,19 @@ router.get('/products/:id', async (req, res, next) => {
 });
 
 // GET operation - retrieve all products
-router.get('/products', (req, res, next) => {
-  Product.find({})
-    .then((products) => {
-      res.status(200).send(products);
-    })
-    .catch((error) => {
-      console.error('Error retrieving products:', error);
-      next(error);
-    });
+router.get('/products', async (req, res, next) => {
+  try {
+    const products = await Product.find({})
+    res.status(200).send(products);
+  } catch (error) {
+    console.error('Error retrieving products:', error);
+    next(error);
+  }
 });
 
+
 // POST operation - create a new product
-router.post('/products', Middleware.validatePostSchema, async (req, res, next) => {
+router.post('/product', Middleware.validatePostSchema, async (req, res, next) => {
   try {
     console.log("Received a new POST /products request", req.body)
     const newProduct = req.body;
@@ -51,7 +51,7 @@ router.post('/products', Middleware.validatePostSchema, async (req, res, next) =
 
 
 // DELETE operation - delete a product
-router.delete('/products/:id', async (req, res, next) => {
+router.delete('/product/:id', async (req, res, next) => {
   try {
     const productId = req.params.id;
     const product = await Product.findByIdAndDelete(productId);
@@ -68,7 +68,7 @@ router.delete('/products/:id', async (req, res, next) => {
 });
 
 // UPDATE operation - update a product
-router.put('/products/:id', async (req, res, next) => {
+router.put('/product/:id', async (req, res, next) => {
   try {
     const productId = req.params.id;
     const updatedProduct = req.body;
